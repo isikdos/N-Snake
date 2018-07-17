@@ -37,10 +37,13 @@ class Direction:
         for dirCoord in direction.directionalCoordinates:
             if (not isValid) and dirCoord != 0:
                 isValid = True
-            if (isValid) and dirCoord != 0:
+            elif (isValid) and dirCoord != 0:
                 isValid = False
                 break
         if isValid:
             self.directionalCoordinates = direction.directionalCoordinates
-                
+        
+        return isValid
+        
+        
                 

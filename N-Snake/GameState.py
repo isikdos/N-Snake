@@ -8,7 +8,8 @@ from Nartesian import Plane
 from Snake import Snake
 from Position import Position
 from Food import Food
-
+from Board import Board 
+import random
 class GameState:
     """
     The object that controls the game and the game rules.
@@ -27,28 +28,59 @@ class GameState:
         self.plane.SetAxes(axes)
     
     def ChangeSnakeDirection(self, direction):
-        self.snake.ChangeDirection(direction)
+        return self.snake.ChangeDirection(direction)
     
     def MoveSnake(self):
         self.snake.Move()
         
     def CreateFood(self):
-        None
-        #TOBEPLIEMENTED
+        validPositions = list(self.board.boardPositions)
+        for snakeSeg in self.snake.snakeSegments:
+            if snakeSeg.position in validPositions:
+                validPositions.remove(snakeSeg.position)
+                
+        randomPositionIndex = random.randint(0,len(validPositions) - 1)
+        randomPosition = validPositions[randomPositionIndex]
+        
+        self.food.position = randomPosition
+
         
     def CheckForCollision(self):
-        None
-        #TOBEIMPLEMENTED
+        
+        snakeHead = self.snake.snakeSegments[0]
+        for snakeSegment in self.snake.snakeSegments[1:]:
+            if (snakeHead.position == snakeSegment.position):
+                return True
+        return False
+
         
     def CheckForEating(self):
-        None
-        #TOBEIMPLEMENTED
+        
+        snakeHead = self.snake.snakeSegments[0]
+        return snakeHead.position == self.food.position
+
         
     def CalculateProjections(self):
         None
-        #TOBEIMPLEMENTED
+
     
+    def ExecuteTurn(self):
+        self.MoveSnake()
+        if self.CheckForCollision():
+            print("YOU HAVE LOST")
+            self.EndGame(False)
+        if self.CheckForEating():
+            print("YOU HAVE EATEN")
+            self.snake.Eat()
+            self.board.AddDimension()
+            self.CreateFood()
+            
+    def EndGame(self, isWon):
+        None
+        #TOBEIMPLEMENTED
+            
     def StartGame(self, boardSize, difficulty):
+        self.board = Board(0, boardSize)
         self.boardSize = boardSize
         self.difficulty = difficulty
         

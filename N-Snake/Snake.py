@@ -5,7 +5,7 @@ Created on Thu May 24 20:15:48 2018
 @author: Isik
 """
 from Direction import Direction
-
+from Position import Position
 class Snake:
     """
     This class represents a snake itself.
@@ -50,7 +50,9 @@ class Snake:
             a validity check first.
         """
         if len(self.snakeSegments) == 1 or not (self.snakeSegments[0].position + direction == self.snakeSegments[1].position) :
-            self.direction.ChangeDirection(direction) 
+            return self.direction.ChangeDirection(direction) 
+        else:
+            return False
         
     def Move(self):
         """
@@ -69,10 +71,11 @@ class Snake:
         
         if (grow):
             self.segmentsToGrow -= 1
-            lastPosition = self.snakeSegments[-1].position
+            lastPosition = Position(self.snakeSegments[-1].position.coordinates)
             
-        for index, segment in self.snakeSegments[1:]:
-            segment.position = self.snakeSegments[index].position 
+        oldSnakeSegments = [Snake_Segment(Position(snakeSeg.position.coordinates[:])) for snakeSeg in self.snakeSegments]
+        for index, segment in enumerate(self.snakeSegments[1:]):
+            self.snakeSegments[index + 1].position.coordinates = oldSnakeSegments[index].position.coordinates[:]
         
         if (grow):
             self.snakeSegments.append(Snake_Segment(lastPosition))
@@ -88,9 +91,14 @@ class Snake:
             
         Description:
             Called by the game once the snake eats some food. Causes the snake
-            to grow on subsequent turns.
+            to grow on subsequent turns. Increases the dimensionality of the s-
+            nake by one.
         """
         self.segmentsToGrow += self.segmentsPerFood
+        for i,e in enumerate(self.snakeSegments):
+            self.snakeSegments[i].position.coordinates.append(0)
+        
+        self.direction.directionalCoordinates.append(0)
 
 class Snake_Segment:
     """

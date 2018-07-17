@@ -35,9 +35,8 @@ class Position:
 
 
     def __eq__(self, other):
-        if isinstance(self, other.__class__):
-            for cSelf, cOther in zip(self.coordinates, other.coordinates):
-                if cSelf != cOther:
-                    return False
-            return True
-        return False
+
+        for cSelf, cOther in zip(self.coordinates, other.coordinates):
+            if cSelf != cOther:
+                return False
+        return True
